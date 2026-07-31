@@ -3,8 +3,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_holkar_logo"
-        android:roundIcon="@drawable/ic_holkar_logo"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="Holkar Institute"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
