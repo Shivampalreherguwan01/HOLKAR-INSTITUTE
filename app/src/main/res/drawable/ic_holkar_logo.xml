@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="500"
+    android:viewportHeight="500">
+  
+  <!-- Background White Circle/Square -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M0,0h500v500H0z"/>
+
+  <!-- Graduation Cap Base & Top -->
+  <path
+      android:fillColor="#1B2A4A"
+      android:pathData="M250,110 L380,150 L250,190 L120,150 Z"/>
+  <path
+      android:fillColor="#1B2A4A"
+      android:pathData="M335,175 v40 c0,15 -38,30 -85,30 s-85,-15 -85,-30 v-40 l85,25 z"/>
+
+  <!-- Open Book (Dark Blue & Gold Shades) -->
+  <path
+      android:fillColor="#1B2A4A"
+      android:pathData="M250,290 C200,260 100,280 60,310 L60,340 C100,310 200,290 250,330 Z"/>
+  <path
+      android:fillColor="#D4AF37"
+      android:pathData="M250,290 C300,260 400,280 440,310 L440,340 C400,310 300,290 250,330 Z"/>
+
+  <!-- Text Base Representation / Central Emblem -->
+  <path
+      android:fillColor="#1B2A4A"
+      android:pathData="M235,350 h30 v20 h-30 z"/>
+</vector>
