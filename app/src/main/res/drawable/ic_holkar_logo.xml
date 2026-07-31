@@ -1,40 +1,47 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="512"
-    android:viewportHeight="512">
-
-  <!-- Background Clean White Shape -->
+    android:viewportWidth="500"
+    android:viewportHeight="500">
+  
+  <!-- Background Clean White Square -->
   <path
       android:fillColor="#FFFFFF"
-      android:pathData="M0,0h512v512H0z"/>
+      android:pathData="M0,0h500v500H0z"/>
 
-  <!-- Outer Circular Arch / Ring -->
+  <!-- Outer Ring/Arch - Dark Blue -->
   <path
       android:fillColor="#1B2A4A"
-      android:pathData="M256,60 C147.8,60 60,147.8 60,256 C60,270 61.5,283.8 64.3,297 C75.1,200.5 156.4,124 256,124 C355.6,124 436.9,200.5 447.7,297 C450.5,283.8 452,270 452,256 C452,147.8 364.2,60 256,60 Z"/>
+      android:pathData="M250,60C147.8,60 65,142.5 65,250c0,13.8 1.1,27.5 3.4,40.8l28.1-7.8c-1.6-7.5-2.5-15.2-2.5-23c0-85.9 69.6-155.5 155.5-155.5s155.5,69.6 155.5,155.5c0,14.4 -1.9,28.5 -5.4,42.1l27.3,11c4.4-17.3 6.7-35.2 6.7-53.1C435,142.5 352.2,60 250,60z"/>
 
+  <!-- Growth Arrow - Gold -->
   <path
       android:fillColor="#D4AF37"
-      android:pathData="M447.7,297 C437.5,389.2 357.7,460 256,460 C154.3,460 74.5,389.2 64.3,297 C57.4,349.5 73,405 111,444 C155,488 217,500 256,500 C295,500 357,488 401,444 C439,405 454.6,349.5 447.7,297 Z"/>
+      android:pathData="M419,167l-69,69h29c-0.4,22.5 -9.2,43.6 -25.6,59.4l20,20c23.9-22.9 37.2-54.1 37.2-87.3v-22.1h29L419,167z"/>
 
-  <!-- Graduation Cap -->
+  <!-- Graduation Cap - Dark Blue -->
   <path
       android:fillColor="#1B2A4A"
-      android:pathData="M256,130 L390,175 L256,220 L122,175 Z"/>
+      android:pathData="M250,105L85,170l165,65l165-65L250,105z"/>
   <path
       android:fillColor="#1B2A4A"
-      android:pathData="M340,195 v45 c0,18 -38,35 -84,35 s-84,-17 -84,-35 v-45 l84,28 z"/>
+      android:pathData="M340,210v30c0,16.6 -40.3,30 -90,30s-90-13.4-90-30v-30l90,30L340,210z"/>
+  <!-- Cap Tassel - Gold -->
   <path
       android:fillColor="#D4AF37"
-      android:pathData="M370,185 l15,40 c0,0 -5,10 -15,10 c-10,0 -15,-10 -15,-10 z"/>
+      android:pathData="M365,215L380,180l-20,10l5,-5l-15,5z"/>
 
-  <!-- Open Book Base -->
+  <!-- Open Book - Dark Blue & Gold -->
+  <!-- Left Page (Dark Blue) -->
   <path
       android:fillColor="#1B2A4A"
-      android:pathData="M256,310 C200,285 100,305 70,330 L70,370 C100,345 200,325 256,360 Z"/>
+      android:pathData="M60,340C85,315 150,300 250,330l0,85C150,385 85,400 60,425L60,340z"/>
+  <!-- Right Page (Gold) -->
   <path
       android:fillColor="#D4AF37"
-      android:pathData="M256,310 C312,285 412,305 442,330 L442,370 C412,345 312,325 256,360 Z"/>
-
+      android:pathData="M440,340C415,315 350,300 250,330l0,85C350,385 415,400 440,425L440,340z"/>
+  <!-- Book Center Spine Mark -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M248,330h4v85h-4z"/>
 </vector>
