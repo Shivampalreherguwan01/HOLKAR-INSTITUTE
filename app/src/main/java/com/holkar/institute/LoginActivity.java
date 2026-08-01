@@ -9,10 +9,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin, btnGoogleLogin, btnFacebookLogin, btnPhoneLogin;
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +35,13 @@ public class LoginActivity extends AppCompatActivity {
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
         btnPhoneLogin = findViewById(R.id.btnPhoneLogin);
 
-        // Email/Password Login
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // Email/Password Login logic
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,9 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else if(email.equals(savedEmail) && password.equals(savedPassword)) {
                     Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
-                    // Open Dashboard
-                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Invalid Email or Password!", Toast.LENGTH_SHORT).show();
@@ -51,37 +64,57 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Google Login Button Action (Free & Simulated direct entry)
+        // Real Google Sign-In Trigger
         btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Google Login Successful!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                startActivity(intent);
-                finish();
+                signInWithGoogle();
             }
         });
 
-        // Facebook Login Button Action
+        // Facebook Login placeholder (Requires FB SDK)
         btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Facebook Login Successful!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                startActivity(intent);
-                finish();
+                Toast.makeText(LoginActivity.this, "Facebook SDK requires app ID setup. Opening browser login...", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Phone Login Button Action
+        // Phone Login placeholder
         btnPhoneLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Phone Verification Successful!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-                startActivity(intent);
-                finish();
+                Toast.makeText(LoginActivity.this, "Please enter mobile number for OTP verification", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            // Real Google Account details fetched successfully!
+            String userName = account.getDisplayName();
+            Toast.makeText(this, "Welcome, " + userName + "!", Toast.LENGTH_LONG).show();
+            
+            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+            finish();
+        } catch (ApiException e) {
+            Toast.makeText(this, "Google Sign-In Failed: " + e.getStatusCode(), Toast.LENGTH_SHORT).show();
+        }
     }
 }
