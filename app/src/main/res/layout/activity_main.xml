@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Holkar Institute"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#0B2545"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome! Please choose an option"
+        android:textSize="15sp"
+        android:textColor="#666666"
+        android:layout_marginBottom="40dp"/>
+
+    <Button
+        android:id="@+id/btnGoToLogin"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:text="Login"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#0B2545"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnGoToSignup"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:text="Sign Up"
+        android:textSize="16sp"
+        android:textColor="#0B2545"
+        android:backgroundTint="#E0E6ED"
+        android:layout_marginBottom="16dp"/>
+
+</LinearLayout>
