@@ -1,5 +1,6 @@
 package com.holkar.institute;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +31,15 @@ public class SignupActivity extends AppCompatActivity {
                 if(email.isEmpty() || password.isEmpty()){
                     Toast.makeText(SignupActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SignupActivity.this, "Signup Successful!", Toast.LENGTH_SHORT).show();
+                    // SharedPreferences mein user ka data save kar rahe hain (100% Free & Local)
+                    SharedPreferences prefs = getSharedPreferences("HolkarPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("saved_email", email);
+                    editor.putString("saved_password", password);
+                    editor.apply();
+
+                    Toast.makeText(SignupActivity.this, "Signup Successful! Now you can Login.", Toast.LENGTH_LONG).show();
+                    finish(); // Back to login
                 }
             }
         });
