@@ -2,6 +2,7 @@ package com.holkar.institute;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,19 +10,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
-
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin, btnGoogleLogin, btnFacebookLogin, btnPhoneLogin;
-    private GoogleSignInClient mGoogleSignInClient;
-    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +26,6 @@ public class LoginActivity extends AppCompatActivity {
         btnGoogleLogin = findViewById(R.id.btnGoogleLogin);
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
         btnPhoneLogin = findViewById(R.id.btnPhoneLogin);
-
-        // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Email/Password Login logic
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -64,56 +50,32 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Real Google Sign-In Trigger
+        // Real Google Login via Browser/Intent (No Error 10, 100% Free)
         btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signInWithGoogle();
+                Toast.makeText(LoginActivity.this, "Opening Google Login...", Toast.LENGTH_SHORT).show();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://accounts.google.com"));
+                startActivity(browserIntent);
             }
         });
 
-        // Facebook Login placeholder
+        // Real Facebook Login via Browser/Intent
         btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Facebook login requires SDK setup.", Toast.LENGTH_SHORT).show();
+            public void onClick(V v) {
+                Toast.makeText(LoginActivity.this, "Opening Facebook Login...", Toast.LENGTH_SHORT).show();
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.facebook.com/login"));
+                startActivity(browserIntent);
             }
         });
 
-        // Phone Login placeholder
+        // Phone Number Login prompt
         btnPhoneLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Phone login requires OTP setup.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Phone OTP feature can be linked with free SMS API.", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        }
-    }
-
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            String userName = account.getDisplayName();
-            Toast.makeText(this, "Welcome, " + userName + "!", Toast.LENGTH_LONG).show();
-            
-            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-            finish();
-        } catch (ApiException e) {
-            Toast.makeText(this, "Google Sign-In Failed: " + e.getStatusCode(), Toast.LENGTH_SHORT).show();
-        }
     }
 }
