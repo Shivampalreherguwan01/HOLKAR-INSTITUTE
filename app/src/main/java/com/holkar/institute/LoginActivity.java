@@ -72,11 +72,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Facebook Login placeholder (Requires FB SDK)
+        // Facebook Login placeholder
         btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Facebook SDK requires app ID setup. Opening browser login...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Facebook login requires SDK setup.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -84,13 +84,13 @@ public class LoginActivity extends AppCompatActivity {
         btnPhoneLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Please enter mobile number for OTP verification", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Phone login requires OTP setup.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void signInWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignIntent();
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -107,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            // Real Google Account details fetched successfully!
             String userName = account.getDisplayName();
             Toast.makeText(this, "Welcome, " + userName + "!", Toast.LENGTH_LONG).show();
             
