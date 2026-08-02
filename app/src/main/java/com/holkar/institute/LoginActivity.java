@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Real Google Login via Browser/Intent (No Error 10, 100% Free)
+        // Real Google Login via Browser/Intent
         btnGoogleLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         // Real Facebook Login via Browser/Intent
         btnFacebookLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(V v) {
+            public void onClick(View v) {
                 Toast.makeText(LoginActivity.this, "Opening Facebook Login...", Toast.LENGTH_SHORT).show();
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.facebook.com/login"));
                 startActivity(browserIntent);
