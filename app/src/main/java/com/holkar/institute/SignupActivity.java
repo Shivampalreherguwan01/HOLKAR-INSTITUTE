@@ -1,7 +1,9 @@
 package com.holkar.institute;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,18 +30,32 @@ public class SignupActivity extends AppCompatActivity {
                 String email = etSignupEmail.getText().toString().trim();
                 String password = etSignupPassword.getText().toString().trim();
 
-                if(email.isEmpty() || password.isEmpty()){
+                // Check empty fields
+                if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(SignupActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
-                } else {
-                    // SharedPreferences mein user ka data save kar rahe hain (100% Free & Local)
+                } 
+                // Strict Email validation check
+                else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    Toast.makeText(SignupActivity.this, "Please enter a valid email address!", Toast.LENGTH_SHORT).show();
+                } 
+                // Password length check
+                else if (password.length() < 6) {
+                    Toast.makeText(SignupActivity.this, "Password must be at least 6 characters!", Toast.LENGTH_SHORT).show();
+                } 
+                else {
+                    // Save credentials securely in SharedPreferences
                     SharedPreferences prefs = getSharedPreferences("HolkarPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("saved_email", email);
                     editor.putString("saved_password", password);
                     editor.apply();
 
-                    Toast.makeText(SignupActivity.this, "Signup Successful! Now you can Login.", Toast.LENGTH_LONG).show();
-                    finish(); // Back to login
+                    Toast.makeText(SignupActivity.this, "Signup Successful! Please Login.", Toast.LENGTH_SHORT).show();
+                    
+                    // Redirect to Login Page
+                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
