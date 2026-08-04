@@ -16,7 +16,7 @@
         android:textColor="#0B2545"
         android:layout_marginBottom="32dp"/>
 
-    <!-- STEP 1: Details & Register -->
+    <!-- STEP 1: Name, DOB, Email -->
     <LinearLayout
         android:id="@+id/layoutStep1"
         android:layout_width="match_parent"
@@ -46,16 +46,68 @@
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Gmail Address"
+            android:hint="Email Address"
             android:inputType="textEmailAddress"
             android:padding="12dp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnNext1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Get Verification Code"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0B2545"/>
+    </LinearLayout>
+
+    <!-- STEP 2: OTP Verification -->
+    <LinearLayout
+        android:id="@+id/layoutStep2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter the 6-digit code sent to you (Valid for 5 mins)"
+            android:textSize="14sp"
+            android:textColor="#666666"
             android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etOtp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Enter 6-digit Code"
+            android:inputType="number"
+            android:maxLength="6"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnVerifyOtp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Verify Code"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0B2545"/>
+    </LinearLayout>
+
+    <!-- STEP 3: Password Setup -->
+    <LinearLayout
+        android:id="@+id/layoutStep3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Password (Min 6 chars)"
+            android:hint="Create Password (Min 6 chars)"
             android:inputType="textPassword"
             android:padding="12dp"
             android:layout_marginBottom="24dp"/>
@@ -64,34 +116,7 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Register &amp; Send Gmail Verification"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#0B2545"/>
-    </LinearLayout>
-
-    <!-- STEP 2: Wait for Gmail Link Click -->
-    <LinearLayout
-        android:id="@+id/layoutStep2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="A verification link has been sent to your Gmail inbox. Please open your Gmail, click the link to verify, and then click the button below."
-            android:textSize="15sp"
-            android:textColor="#333333"
-            android:gravity="center"
-            android:layout_marginBottom="24dp"/>
-
-        <Button
-            android:id="@+id/btnCheckVerification"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="I Have Verified My Email"
+            android:text="Complete Signup &amp; Enter App"
             android:textColor="#FFFFFF"
             android:backgroundTint="#0B2545"/>
     </LinearLayout>

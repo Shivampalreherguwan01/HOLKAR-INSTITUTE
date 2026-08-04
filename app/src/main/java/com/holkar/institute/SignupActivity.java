@@ -43,7 +43,7 @@ public class SignupActivity extends AppCompatActivity {
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
         btnRegister = findViewById(R.id.btnRegister);
 
-        // Step 1: Name, DOB, Email enter karke OTP generate karna
+        // Step 1: Input details & generate OTP
         btnNext1.setOnClickListener(v -> {
             String name = etFullName.getText().toString().trim();
             String dob = etDob.getText().toString().trim();
@@ -59,19 +59,23 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // Generate 6-digit OTP
+            // Check if email already exists
+            if (dbHelper.checkEmailExists(email)) {
+                Toast.makeText(this, "Email is already registered! Please Login.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             Random random = new Random();
             generatedOtp = String.format("%06d", random.nextInt(1000000));
             otpTimestamp = System.currentTimeMillis();
 
-            // Screen par code pop-up karne ke sath toast dikhana
-            Toast.makeText(this, "Verification Code sent to " + email + ": " + generatedOtp, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Verification Code: " + generatedOtp, Toast.LENGTH_LONG).show();
 
             layoutStep1.setVisibility(View.GONE);
             layoutStep2.setVisibility(View.VISIBLE);
         });
 
-        // Step 2: OTP Verification (5 Minutes Expiry Check)
+        // Step 2: Verify OTP
         btnVerifyOtp.setOnClickListener(v -> {
             String enteredOtp = etOtp.getText().toString().trim();
             long currentTime = System.currentTimeMillis();
@@ -83,7 +87,7 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             if (currentTime - otpTimestamp > fiveMinutesInMillis) {
-                Toast.makeText(this, "OTP Expired! 5 minutes time limit exceeded.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "OTP Expired! 5 minutes limit exceeded.", Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }
@@ -93,11 +97,11 @@ public class SignupActivity extends AppCompatActivity {
                 layoutStep2.setVisibility(View.GONE);
                 layoutStep3.setVisibility(View.VISIBLE);
             } else {
-                Toast.makeText(this, "Invalid OTP! Please check code.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid OTP code!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Step 3: Password set karke database me save karna aur seedha Dashboard kholna
+        // Step 3: Password setup & Direct Dashboard open
         btnRegister.setOnClickListener(v -> {
             String password = etPassword.getText().toString().trim();
 
@@ -116,7 +120,7 @@ public class SignupActivity extends AppCompatActivity {
                 startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
                 finish();
             } else {
-                Toast.makeText(this, "Registration failed! Email might already exist.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Registration failed!", Toast.LENGTH_LONG).show();
             }
         });
     }

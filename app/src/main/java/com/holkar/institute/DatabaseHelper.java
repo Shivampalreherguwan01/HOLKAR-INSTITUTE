@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Insert new registered user
     public boolean insertUser(String name, String dob, String email, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -49,5 +50,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_USER, null, values);
         return result != -1;
+    }
+
+    // Check if Email exists
+    public boolean checkEmailExists(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USER,
+                new String[]{COL_ID},
+                COL_EMAIL + "=?",
+                new String[]{email.toLowerCase().trim()},
+                null, null, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count > 0;
+    }
+
+    // Check correct Email & Password combination
+    public boolean checkUserCredentials(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USER,
+                new String[]{COL_ID},
+                COL_EMAIL + "=? AND " + COL_PASSWORD + "=?",
+                new String[]{email.toLowerCase().trim(), password},
+                null, null, null);
+
+        int count = cursor.getCount();
+        cursor.close();
+        return count > 0;
     }
 }

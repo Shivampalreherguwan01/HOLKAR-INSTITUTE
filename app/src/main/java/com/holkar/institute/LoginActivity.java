@@ -29,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
         btnPhoneLogin = findViewById(R.id.btnPhoneLogin);
 
-        // Strict Real Login Check
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,14 +45,12 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                // Check if email is registered first
                 boolean isEmailRegistered = dbHelper.checkEmailExists(email);
                 if (!isEmailRegistered) {
                     Toast.makeText(LoginActivity.this, "Error: This email is not registered. Please Sign Up first!", Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                // Check exact password
                 boolean isValidUser = dbHelper.checkUserCredentials(email, password);
                 if (isValidUser) {
                     Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
@@ -65,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Disable fake social login bypass completely
         View.OnClickListener disabledSocialClick = v -> 
             Toast.makeText(LoginActivity.this, "Social logins are disabled. Please use Email and Password.", Toast.LENGTH_SHORT).show();
 
