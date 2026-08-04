@@ -14,44 +14,111 @@
         android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="#0B2545"
-        android:layout_marginBottom="8dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create a new account"
-        android:textSize="14sp"
-        android:textColor="#666666"
         android:layout_marginBottom="32dp"/>
 
-    <EditText
-        android:id="@+id/etSignupEmail"
+    <!-- STEP 1: Name, DOB, Email -->
+    <LinearLayout
+        android:id="@+id/layoutStep1"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Email Address"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:background="@android:drawable/editbox_background_normal"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
 
-    <EditText
-        android:id="@+id/etSignupPassword"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="12dp"
-        android:background="@android:drawable/editbox_background_normal"
-        android:layout_marginBottom="24dp"/>
+        <EditText
+            android:id="@+id/etFullName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Full Name"
+            android:inputType="textPersonName"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/btnSignup"
+        <EditText
+            android:id="@+id/etDob"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Date of Birth (DD/MM/YYYY)"
+            android:inputType="date"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnNext1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Get Verification OTP"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0B2545"/>
+    </LinearLayout>
+
+    <!-- STEP 2: OTP Verification -->
+    <LinearLayout
+        android:id="@+id/layoutStep2"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:text="Sign Up"
-        android:textSize="16sp"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#0B2545"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            text="Enter the 6-digit code sent to your email (Valid for 5 mins)"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etOtp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Enter 6-digit OTP"
+            android:inputType="number"
+            android:maxLength="6"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnVerifyOtp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Verify OTP"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0B2545"/>
+    </LinearLayout>
+
+    <!-- STEP 3: Password Setup -->
+    <LinearLayout
+        android:id="@+id/layoutStep3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Create Password (Min 6 chars)"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Complete Signup &amp; Enter App"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#0B2545"/>
+    </LinearLayout>
 
 </LinearLayout>
