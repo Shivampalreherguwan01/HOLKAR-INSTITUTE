@@ -56,49 +56,14 @@
             android:id="@+id/btnNext1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Send SMS OTP"
+            android:text="Next"
             android:textColor="#FFFFFF"
             android:backgroundTint="#0B2545"/>
     </LinearLayout>
 
-    <!-- STEP 2: OTP Verification -->
+    <!-- STEP 2: Password Setup -->
     <LinearLayout
         android:id="@+id/layoutStep2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enter the 6-digit SMS OTP received on your mobile"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="16dp"/>
-
-        <EditText
-            android:id="@+id/etOtp"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Enter 6-digit OTP"
-            android:inputType="number"
-            android:maxLength="6"
-            android:padding="12dp"
-            android:layout_marginBottom="24dp"/>
-
-        <Button
-            android:id="@+id/btnVerifyOtp"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Verify OTP"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#0B2545"/>
-    </LinearLayout>
-
-    <!-- STEP 3: Password Setup -->
-    <LinearLayout
-        android:id="@+id/layoutStep3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
