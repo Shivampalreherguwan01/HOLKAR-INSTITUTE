@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Learning & Secure Portal"
+        android:text="Learning and Secure Portal"
         android:textColor="#666666"
         android:textSize="14sp"
         android:layout_marginBottom="32dp" />
@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:backgroundTint="#3F51B5"
-            android:text="Verify &amp; Proceed"
+            android:text="Verify and Proceed"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>
