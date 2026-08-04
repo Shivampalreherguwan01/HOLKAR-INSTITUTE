@@ -114,6 +114,7 @@ public class SignupActivity extends AppCompatActivity {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("authorization", FAST2SMS_API_KEY);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("Cache-Control", "no-cache");
                 conn.setDoOutput(true);
 
                 String message = "Your Holkar Institute OTP is " + otp;
@@ -127,7 +128,7 @@ public class SignupActivity extends AppCompatActivity {
 
                 int responseCode = conn.getResponseCode();
                 BufferedReader reader;
-                if (responseCode == 200) {
+                if (responseCode >= 200 && responseCode < 300) {
                     reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 } else {
                     reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
@@ -141,12 +142,12 @@ public class SignupActivity extends AppCompatActivity {
                 reader.close();
 
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (responseCode == 200) {
+                    if (responseCode >= 200 && responseCode < 300) {
                         Toast.makeText(SignupActivity.this, "Real SMS Sent Successfully!", Toast.LENGTH_LONG).show();
                         layoutPhoneStep.setVisibility(View.GONE);
                         layoutOtpStep.setVisibility(View.VISIBLE);
                     } else {
-                        Toast.makeText(SignupActivity.this, "API Error Code: " + responseCode, Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignupActivity.this, "API Error Code: " + responseCode + " | " + response.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
 
