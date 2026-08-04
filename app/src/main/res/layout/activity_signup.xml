@@ -2,124 +2,146 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="#FFFFFF"
     android:gravity="center"
-    android:padding="24dp"
-    android:background="#FFFFFF">
+    android:orientation="vertical"
+    android:padding="24dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Holkar Institute"
-        android:textSize="26sp"
+        android:textColor="#3F51B5"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#0B2545"
-        android:layout_marginBottom="32dp"/>
+        android:layout_marginBottom="8dp" />
 
-    <!-- STEP 1: Name, DOB, Mobile Number -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Learning & Secure Portal"
+        android:textColor="#666666"
+        android:textSize="14sp"
+        android:layout_marginBottom="32dp" />
+
+    <!-- Step 1: Mobile Number Layout -->
     <LinearLayout
-        android:id="@+id/layoutStep1"
+        android:id="@+id/layoutPhoneStep"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etFullName"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Full Name"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
-
-        <EditText
-            android:id="@+id/etDob"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:hint="Date of Birth (DD/MM/YYYY)"
-            android:inputType="date"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter your mobile number to continue"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
 
         <EditText
             android:id="@+id/etPhone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@android:drawable/editbox_background_normal"
             android:hint="Mobile Number"
             android:inputType="phone"
             android:maxLength="10"
             android:padding="12dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="16dp" />
 
         <Button
-            android:id="@+id/btnNext1"
+            android:id="@+id/btnGetOtp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Send Real SMS OTP"
+            android:backgroundTint="#3F51B5"
+            android:text="Get OTP"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#0B2545"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- STEP 2: SMS OTP Verification -->
+    <!-- Step 2: OTP Verification Layout -->
     <LinearLayout
-        android:id="@+id/layoutStep2"
+        android:id="@+id/layoutOtpStep"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter the 6-digit SMS OTP received on your mobile"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginBottom="16dp"/>
+            android:text="Enter the OTP received on your mobile"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp" />
 
         <EditText
             android:id="@+id/etOtp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Enter 6-digit OTP"
+            android:background="@android:drawable/editbox_background_normal"
+            android:hint="Enter 4-digit OTP"
             android:inputType="number"
-            android:maxLength="6"
+            android:maxLength="4"
             android:padding="12dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/btnVerifyOtp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Verify OTP"
+            android:backgroundTint="#3F51B5"
+            android:text="Verify &amp; Proceed"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#0B2545"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- STEP 3: Password Setup -->
+    <!-- Step 3: Profile Setup for New Students Layout -->
     <LinearLayout
-        android:id="@+id/layoutStep3"
+        android:id="@+id/layoutProfileStep"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Complete Your Profile"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
         <EditText
-            android:id="@+id/etPassword"
+            android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Create Password (Min 6 chars)"
-            android:inputType="textPassword"
+            android:background="@android:drawable/editbox_background_normal"
+            android:hint="Full Name"
+            android:inputType="textPersonName"
             android:padding="12dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/etDob"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:drawable/editbox_background_normal"
+            android:hint="Date of Birth (DD/MM/YYYY)"
+            android:inputType="date"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
 
         <Button
-            android:id="@+id/btnRegister"
+            android:id="@+id/btnCompleteRegister"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Complete Signup &amp; Login"
+            android:backgroundTint="#3F51B5"
+            android:text="Start Learning"
             android:textColor="#FFFFFF"
-            android:backgroundTint="#0B2545"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

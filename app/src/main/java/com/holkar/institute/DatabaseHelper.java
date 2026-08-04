@@ -8,15 +8,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "HolkarApp.db";
-    private static final int DATABASE_VERSION = 1;
-    private static final String TABLE_USER = "users";
-    
-    private static final String COL_ID = "id";
-    private static final String COL_NAME = "name";
-    private static final String COL_DOB = "dob";
-    private static final String COL_EMAIL = "email";
-    private static final String COL_PASSWORD = "password";
+    private static final String DATABASE_NAME = "HolkarInstitute.db";
+    private static final int DATABASE_VERSION = 2;
+
+    public static final String TABLE_USERS = "users";
+    public static final String COLUMN_PHONE = "phone";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_DOB = "dob";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,58 +22,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + TABLE_USER + " (" +
-                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL_NAME + " TEXT, " +
-                COL_DOB + " TEXT, " +
-                COL_EMAIL + " TEXT UNIQUE, " +
-                COL_PASSWORD + " TEXT)";
-        db.execSQL(createTable);
+        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "("
+                + COLUMN_PHONE + " TEXT PRIMARY KEY,"
+                + COLUMN_NAME + " TEXT,"
+                + COLUMN_DOB + " TEXT" + ")";
+        db.execSQL(CREATE_USERS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         onCreate(db);
     }
 
-    // Insert new registered user
-    public boolean insertUser(String name, String dob, String email, String password) {
+    public boolean checkUserExists(String phone) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, new String[]{COLUMN_PHONE},
+                COLUMN_PHONE + "=?", new String[]{phone},
+                null, null, null);
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
+    }
+
+    public boolean registerOrUpdateUser(String phone, String name, String dob) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(COL_NAME, name);
-        values.put(COL_DOB, dob);
-        values.put(COL_EMAIL, email.toLowerCase().trim());
-        values.put(COL_PASSWORD, password);
+        values.put(COLUMN_PHONE, phone);
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_DOB, dob);
 
-        long result = db.insert(TABLE_USER, null, values);
-        return result != -1;
-    }
-
-    // Check if Email exists
-    public boolean checkEmailExists(String email) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_USER,
-                new String[]{COL_ID},
-                COL_EMAIL + "=?",
-                new String[]{email.toLowerCase().trim()},
-                null, null, null);
-        int count = cursor.getCount();
-        cursor.close();
-        return count > 0;
-    }
-
-    // Check correct Email & Password combination
-    public boolean checkUserCredentials(String email, String password) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_USER,
-                new String[]{COL_ID},
-                COL_EMAIL + "=? AND " + COL_PASSWORD + "=?",
-                new String[]{email.toLowerCase().trim(), password},
-                null, null, null);
-
-        int count = cursor.getCount();
-        cursor.close();
-        return count > 0;
+        long id = db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        return id != -1;
     }
 }
