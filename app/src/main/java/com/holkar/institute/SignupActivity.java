@@ -10,92 +10,113 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import java.util.Random;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private LinearLayout layoutStep1, layoutStep2;
-    private EditText etFullName, etDob, etEmail, etPassword;
-    private Button btnRegister, btnCheckVerification;
-    private FirebaseAuth mAuth;
+    private LinearLayout layoutStep1, layoutStep2, layoutStep3;
+    private EditText etFullName, etDob, etEmail, etOtp, etPassword;
+    private Button btnNext1, btnVerifyOtp, btnRegister;
+    private DatabaseHelper dbHelper;
+
+    private String generatedOtp = "";
+    private long otpTimestamp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        mAuth = FirebaseAuth.getInstance();
+        dbHelper = new DatabaseHelper(this);
 
         layoutStep1 = findViewById(R.id.layoutStep1);
         layoutStep2 = findViewById(R.id.layoutStep2);
+        layoutStep3 = findViewById(R.id.layoutStep3);
 
         etFullName = findViewById(R.id.etFullName);
         etDob = findViewById(R.id.etDob);
         etEmail = findViewById(R.id.etEmail);
+        etOtp = findViewById(R.id.etOtp);
         etPassword = findViewById(R.id.etPassword);
 
+        btnNext1 = findViewById(R.id.btnNext1);
+        btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
         btnRegister = findViewById(R.id.btnRegister);
-        btnCheckVerification = findViewById(R.id.btnCheckVerification);
 
-        // Step 1: Create account and send official Google verification email to Gmail inbox
-        btnRegister.setOnClickListener(v -> {
+        // Step 1: Name, DOB, Email enter karke OTP generate karna
+        btnNext1.setOnClickListener(v -> {
             String name = etFullName.getText().toString().trim();
             String dob = etDob.getText().toString().trim();
             String email = etEmail.getText().toString().trim();
-            String password = etPassword.getText().toString().trim();
 
-            if (name.isEmpty() || dob.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            if (name.isEmpty() || dob.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Enter a valid Gmail address", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Enter a valid email address", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // Generate 6-digit OTP
+            Random random = new Random();
+            generatedOtp = String.format("%06d", random.nextInt(1000000));
+            otpTimestamp = System.currentTimeMillis();
+
+            // Screen par code pop-up karne ke sath toast dikhana
+            Toast.makeText(this, "Verification Code sent to " + email + ": " + generatedOtp, Toast.LENGTH_LONG).show();
+
+            layoutStep1.setVisibility(View.GONE);
+            layoutStep2.setVisibility(View.VISIBLE);
+        });
+
+        // Step 2: OTP Verification (5 Minutes Expiry Check)
+        btnVerifyOtp.setOnClickListener(v -> {
+            String enteredOtp = etOtp.getText().toString().trim();
+            long currentTime = System.currentTimeMillis();
+            long fiveMinutesInMillis = 5 * 60 * 1000;
+
+            if (enteredOtp.isEmpty()) {
+                Toast.makeText(this, "Please enter the verification code", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (currentTime - otpTimestamp > fiveMinutesInMillis) {
+                Toast.makeText(this, "OTP Expired! 5 minutes time limit exceeded.", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+
+            if (enteredOtp.equals(generatedOtp)) {
+                Toast.makeText(this, "Email Verified Successfully!", Toast.LENGTH_SHORT).show();
+                layoutStep2.setVisibility(View.GONE);
+                layoutStep3.setVisibility(View.VISIBLE);
+            } else {
+                Toast.makeText(this, "Invalid OTP! Please check code.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Step 3: Password set karke database me save karna aur seedha Dashboard kholna
+        btnRegister.setOnClickListener(v -> {
+            String password = etPassword.getText().toString().trim();
 
             if (password.length() < 6) {
                 Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Create user in Firebase
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, task -> {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            if (user != null) {
-                                // Send real verification link/email to user's Gmail inbox
-                                user.sendEmailVerification().addOnCompleteListener(emailTask -> {
-                                    if (emailTask.isSuccessful()) {
-                                        Toast.makeText(this, "Verification email sent to your Gmail inbox! Please check.", Toast.LENGTH_LONG).show();
-                                        layoutStep1.setVisibility(View.GONE);
-                                        layoutStep2.setVisibility(View.VISIBLE);
-                                    } else {
-                                        Toast.makeText(this, "Failed to send email: " + emailTask.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
-                        } else {
-                            Toast.makeText(this, "Signup Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-        });
+            String name = etFullName.getText().toString().trim();
+            String dob = etDob.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
 
-        // Step 2: Check if user clicked the link in their Gmail inbox
-        btnCheckVerification.setOnClickListener(v -> {
-            FirebaseUser user = mAuth.getCurrentUser();
-            if (user != null) {
-                user.reload().addOnCompleteListener(task -> {
-                    if (user.isEmailVerified()) {
-                        Toast.makeText(this, "Email Verified Successfully! Opening App...", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Email not verified yet! Please check your Gmail link.", Toast.LENGTH_LONG).show();
-                    }
-                });
+            boolean isInserted = dbHelper.insertUser(name, dob, email, password);
+            if (isInserted) {
+                Toast.makeText(this, "Account Created Successfully!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
+                finish();
+            } else {
+                Toast.makeText(this, "Registration failed! Email might already exist.", Toast.LENGTH_LONG).show();
             }
         });
     }
