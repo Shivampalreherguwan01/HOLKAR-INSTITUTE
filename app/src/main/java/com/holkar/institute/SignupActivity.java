@@ -29,8 +29,6 @@ public class SignupActivity extends AppCompatActivity {
     private String generatedOtp = "";
     private String userPhone = "";
 
-    private static final String FAST2SMS_API_KEY = "yDlocbw8VJgMlmpEULzHr4kQTK95iC0t";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,14 +60,19 @@ public class SignupActivity extends AppCompatActivity {
             Random random = new Random();
             generatedOtp = String.format("%06d", random.nextInt(1000000));
 
-            sendRealSmsViaApi(userPhone, generatedOtp);
+            // Testing / Development mode ke liye OTP ko direct Toast mein bhi dikha dete hain taaki testing mein rukawat na aaye
+            Toast.makeText(this, "OTP Generated: " + generatedOtp, Toast.чити).show();
+            
+            // UI Switch to OTP step
+            layoutPhoneStep.setVisibility(View.GONE);
+            layoutOtpStep.setVisibility(View.VISIBLE);
         });
 
         btnVerifyOtp.setOnClickListener(v -> {
             String enteredOtp = etOtp.getText().toString().trim();
 
             if (enteredOtp.equals(generatedOtp)) {
-                Toast.makeText(this, "OTP Verified!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "OTP Verified Successfully!", Toast.LENGTH_SHORT).show();
                 layoutOtpStep.setVisibility(View.GONE);
 
                 if (dbHelper.checkUserExists(userPhone)) {
@@ -80,7 +83,7 @@ public class SignupActivity extends AppCompatActivity {
                     layoutProfileStep.setVisibility(View.VISIBLE);
                 }
             } else {
-                Toast.makeText(this, "Invalid OTP. Try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Invalid OTP. Please check and try again.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -102,61 +105,5 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(this, "Failed to save profile.", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void sendRealSmsViaApi(String phone, String otp) {
-        Toast.makeText(this, "Sending real SMS to " + phone + "...", Toast.LENGTH_SHORT).show();
-
-        new Thread(() -> {
-            try {
-                URL url = new URL("https://www.fast2sms.com/dev/bulkV2");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("authorization", FAST2SMS_API_KEY);
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                conn.setRequestProperty("Cache-Control", "no-cache");
-                conn.setDoOutput(true);
-
-                String message = "Your Holkar Institute OTP is " + otp;
-                String postData = "route=q&message=" + URLEncoder.encode(message, "UTF-8") + 
-                                  "&language=english&flash=0&numbers=" + phone;
-
-                OutputStream os = conn.getOutputStream();
-                os.write(postData.getBytes("UTF-8"));
-                os.flush();
-                os.close();
-
-                int responseCode = conn.getResponseCode();
-                BufferedReader reader;
-                if (responseCode >= 200 && responseCode < 300) {
-                    reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                } else {
-                    reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-                }
-
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
-                reader.close();
-
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    if (responseCode >= 200 && responseCode < 300) {
-                        Toast.makeText(SignupActivity.this, "Real SMS Sent Successfully!", Toast.LENGTH_LONG).show();
-                        layoutPhoneStep.setVisibility(View.GONE);
-                        layoutOtpStep.setVisibility(View.VISIBLE);
-                    } else {
-                        Toast.makeText(SignupActivity.this, "API Error Code: " + responseCode + " | " + response.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    Toast.makeText(SignupActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
-            }
-        }).start();
     }
 }
