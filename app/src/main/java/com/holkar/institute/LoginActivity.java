@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         btnFacebookLogin = findViewById(R.id.btnFacebookLogin);
         btnPhoneLogin = findViewById(R.id.btnPhoneLogin);
 
-        // Real SQLite Database Login Check
+        // Strict Real Login Check
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,20 +46,31 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                boolean isValidUser = dbHelper.checkUser(email, password);
+                // Check if email is registered first
+                boolean isEmailRegistered = dbHelper.checkEmailExists(email);
+                if (!isEmailRegistered) {
+                    Toast.makeText(LoginActivity.this, "Error: This email is not registered. Please Sign Up first!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // Check exact password
+                boolean isValidUser = dbHelper.checkUserCredentials(email, password);
                 if (isValidUser) {
                     Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Invalid Email or Password! Please Sign Up first.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Incorrect Password! Please try again.", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
-        // Social login safety prompts
-        btnGoogleLogin.setOnClickListener(v -> Toast.makeText(LoginActivity.this, "Please use Email/Password or register first.", Toast.LENGTH_SHORT).show());
-        btnFacebookLogin.setOnClickListener(v -> Toast.makeText(LoginActivity.this, "Please use Email/Password or register first.", Toast.LENGTH_SHORT).show());
-        btnPhoneLogin.setOnClickListener(v -> Toast.makeText(LoginActivity.this, "Please use Email/Password or register first.", Toast.LENGTH_SHORT).show());
+        // Disable fake social login bypass completely
+        View.OnClickListener disabledSocialClick = v -> 
+            Toast.makeText(LoginActivity.this, "Social logins are disabled. Please use Email and Password.", Toast.LENGTH_SHORT).show();
+
+        btnGoogleLogin.setOnClickListener(disabledSocialClick);
+        btnFacebookLogin.setOnClickListener(disabledSocialClick);
+        btnPhoneLogin.setOnClickListener(disabledSocialClick);
     }
 }
