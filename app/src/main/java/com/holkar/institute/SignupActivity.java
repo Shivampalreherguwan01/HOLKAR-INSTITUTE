@@ -2,6 +2,8 @@ package com.holkar.institute;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,6 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Random;
 
 public class SignupActivity extends AppCompatActivity {
@@ -20,6 +27,9 @@ public class SignupActivity extends AppCompatActivity {
 
     private String generatedOtp = "";
     private String userPhone = "";
+
+    // Yahan teri asli Fast2SMS API Key fit kar di hai
+    private static final String FAST2SMS_API_KEY = "yDlocbw8VJgMlmpEULzHr4kQTK95iC0t";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +51,7 @@ public class SignupActivity extends AppCompatActivity {
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
         btnCompleteRegister = findViewById(R.id.btnCompleteRegister);
 
-        // Step 1: Enter Mobile Number & Generate OTP (PW Style)
+        // Step 1: Enter Mobile Number & Send Real SMS via API
         btnGetOtp.setOnClickListener(v -> {
             userPhone = etPhone.getText().toString().trim();
 
@@ -50,15 +60,12 @@ public class SignupActivity extends AppCompatActivity {
                 return;
             }
 
-            // Generate secure 4-digit OTP
+            // Generate 6-digit secure OTP
             Random random = new Random();
-            generatedOtp = String.format("%04d", random.nextInt(10000));
+            generatedOtp = String.format("%06d", random.nextInt(1000000));
 
-            // Simulation of OTP delivery notice (Safe & Crash-free)
-            Toast.makeText(this, "OTP sent successfully to " + userPhone + " [Code: " + generatedOtp + "]", Toast.LENGTH_LONG).show();
-
-            layoutPhoneStep.setVisibility(View.GONE);
-            layoutOtpStep.setVisibility(View.VISIBLE);
+            // Call background thread to send real SMS via Fast2SMS
+            sendRealSmsViaApi(userPhone, generatedOtp);
         });
 
         // Step 2: Verify OTP
@@ -69,14 +76,11 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(this, "OTP Verified!", Toast.LENGTH_SHORT).show();
                 layoutOtpStep.setVisibility(View.GONE);
 
-                // Check if user already exists in database
                 if (dbHelper.checkUserExists(userPhone)) {
-                    // Existing student -> Direct login to Dashboard
                     Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
                     finish();
                 } else {
-                    // New student -> Ask profile details (Name & DOB) like PW/KGS signup
                     layoutProfileStep.setVisibility(View.VISIBLE);
                 }
             } else {
@@ -103,5 +107,42 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(this, "Failed to save profile.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void sendRealSmsViaApi(String phone, String otp) {
+        Toast.makeText(this, "Sending real SMS to " + phone + "...", Toast.LENGTH_SHORT).show();
+
+        new Thread(() -> {
+            try {
+                String message = "Your Holkar Institute OTP is " + otp;
+                String urlString = "https://www.fast2sms.com/dev/bulkV2?authorization=" + FAST2SMS_API_KEY + 
+                        "&route=q&message=" + URLEncoder.encode(message, "UTF-8") + 
+                        "&language=english&flash=0&numbers=" + phone;
+
+                URL url = new URL(urlString);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Toast.makeText(SignupActivity.this, "Real SMS Sent Successfully!", Toast.LENGTH_LONG).show();
+                    layoutPhoneStep.setVisibility(View.GONE);
+                    layoutOtpStep.setVisibility(View.VISIBLE);
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    Toast.makeText(SignupActivity.this, "SMS API Error: Check Internet Connection", Toast.LENGTH_LONG).show();
+                });
+            }
+        }).start();
     }
 }
