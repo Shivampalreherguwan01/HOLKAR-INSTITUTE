@@ -16,7 +16,7 @@
         android:textColor="#0B2545"
         android:layout_marginBottom="32dp"/>
 
-    <!-- STEP 1: Name, DOB, Email -->
+    <!-- STEP 1: Name, DOB, Mobile Number -->
     <LinearLayout
         android:id="@+id/layoutStep1"
         android:layout_width="match_parent"
@@ -43,11 +43,12 @@
             android:layout_marginBottom="16dp"/>
 
         <EditText
-            android:id="@+id/etEmail"
+            android:id="@+id/etPhone"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Email Address"
-            android:inputType="textEmailAddress"
+            android:hint="Mobile Number"
+            android:inputType="phone"
+            android:maxLength="10"
             android:padding="12dp"
             android:layout_marginBottom="24dp"/>
 
@@ -55,7 +56,7 @@
             android:id="@+id/btnNext1"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Get Verification Code"
+            android:text="Send SMS OTP"
             android:textColor="#FFFFFF"
             android:backgroundTint="#0B2545"/>
     </LinearLayout>
@@ -71,7 +72,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter the 6-digit code sent to you (Valid for 5 mins)"
+            android:text="Enter the 6-digit SMS OTP received on your mobile"
             android:textSize="14sp"
             android:textColor="#666666"
             android:layout_marginBottom="16dp"/>
@@ -80,7 +81,7 @@
             android:id="@+id/etOtp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Enter 6-digit Code"
+            android:hint="Enter 6-digit OTP"
             android:inputType="number"
             android:maxLength="6"
             android:padding="12dp"
@@ -90,7 +91,7 @@
             android:id="@+id/btnVerifyOtp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Verify Code"
+            android:text="Verify OTP"
             android:textColor="#FFFFFF"
             android:backgroundTint="#0B2545"/>
     </LinearLayout>
@@ -116,7 +117,7 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Complete Signup &amp; Enter App"
+            android:text="Complete Signup &amp; Login"
             android:textColor="#FFFFFF"
             android:backgroundTint="#0B2545"/>
     </LinearLayout>
