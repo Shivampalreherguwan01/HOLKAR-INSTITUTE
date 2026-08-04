@@ -11,12 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Random;
 
 public class SignupActivity extends AppCompatActivity {
@@ -60,10 +54,9 @@ public class SignupActivity extends AppCompatActivity {
             Random random = new Random();
             generatedOtp = String.format("%06d", random.nextInt(1000000));
 
-            // Testing / Development mode ke liye OTP ko direct Toast mein bhi dikha dete hain taaki testing mein rukawat na aaye
-            Toast.makeText(this, "OTP Generated: " + generatedOtp, Toast.чити).show();
+            // Fixed Toast duration constant
+            Toast.makeText(this, "OTP Generated: " + generatedOtp, Toast.LENGTH_LONG).show();
             
-            // UI Switch to OTP step
             layoutPhoneStep.setVisibility(View.GONE);
             layoutOtpStep.setVisibility(View.VISIBLE);
         });
