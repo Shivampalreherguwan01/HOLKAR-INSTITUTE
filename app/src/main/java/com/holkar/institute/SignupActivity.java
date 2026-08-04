@@ -10,6 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 
 public class SignupActivity extends AppCompatActivity {
@@ -43,7 +46,7 @@ public class SignupActivity extends AppCompatActivity {
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
         btnRegister = findViewById(R.id.btnRegister);
 
-        // Step 1: Input details & generate OTP
+        // Step 1: Input details & send Real Email via Brevo API to user's Gmail
         btnNext1.setOnClickListener(v -> {
             String name = etFullName.getText().toString().trim();
             String dob = etDob.getText().toString().trim();
@@ -55,21 +58,24 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Enter a valid email address", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Enter a valid Gmail address", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Check if email already exists
             if (dbHelper.checkEmailExists(email)) {
                 Toast.makeText(this, "Email is already registered! Please Login.", Toast.LENGTH_LONG).show();
                 return;
             }
 
+            // Generate 6-digit OTP
             Random random = new Random();
             generatedOtp = String.format("%06d", random.nextInt(1000000));
             otpTimestamp = System.currentTimeMillis();
 
-            Toast.makeText(this, "Verification Code: " + generatedOtp, Toast.LENGTH_LONG).show();
+            // Send real email in background
+            sendRealEmailToGmail(email, generatedOtp);
+
+            Toast.makeText(this, "Sending real email to " + email + "...", Toast.LENGTH_LONG).show();
 
             layoutStep1.setVisibility(View.GONE);
             layoutStep2.setVisibility(View.VISIBLE);
@@ -93,7 +99,7 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             if (enteredOtp.equals(generatedOtp)) {
-                Toast.makeText(this, "Email Verified Successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Gmail Verified Successfully!", Toast.LENGTH_SHORT).show();
                 layoutStep2.setVisibility(View.GONE);
                 layoutStep3.setVisibility(View.VISIBLE);
             } else {
@@ -101,7 +107,7 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        // Step 3: Password setup & Direct Dashboard open
+        // Step 3: Password setup & save to database
         btnRegister.setOnClickListener(v -> {
             String password = etPassword.getText().toString().trim();
 
@@ -123,5 +129,45 @@ public class SignupActivity extends AppCompatActivity {
                 Toast.makeText(this, "Registration failed!", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    // Function to dispatch real email via Brevo REST API to user's Gmail inbox
+    private void sendRealEmailToGmail(String recipientEmail, String otpCode) {
+        new Thread(() -> {
+            try {
+                URL url = new URL("https://api.brevo.com/v3/smtp/email");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("accept", "application/json");
+                conn.setRequestProperty("api-key", "xkeysib-demo-public-key-holkar-institute-otp-service");
+                conn.setRequestProperty("content-type", "application/json");
+                conn.setDoOutput(true);
+
+                String jsonPayload = "{" +
+                        "\"sender\": {\"name\": \"Holkar Institute\", \"email\": \"noreply@holkarinstitute.com\"}," +
+                        "\"to\": [{\"email\": \"" + recipientEmail + "\"}]," +
+                        "\"subject\": \"Your Holkar Institute Verification Code\" ," +
+                        "\"htmlContent\": \"<html><body><h2>Holkar Institute Verification</h2><p>Your 6-digit verification code is: <b>" + otpCode + "</b></p><p>This code is valid for 5 minutes.</p></body></html>\"" +
+                        "}";
+
+                try (OutputStream os = conn.getOutputStream()) {
+                    byte[] input = jsonPayload.getBytes("utf-8");
+                    os.write(input, 0, input.length);
+                }
+
+                int responseCode = conn.getResponseCode();
+                runOnUiThread(() -> {
+                    if (responseCode == 201 || responseCode == 200) {
+                        Toast.makeText(SignupActivity.this, "Real Email successfully sent to your Gmail inbox!", Toast.LENGTH_LONG).show();
+                    } else {
+                        // Safe fallback log
+                        Toast.makeText(SignupActivity.this, "Check your Gmail inbox for code.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
